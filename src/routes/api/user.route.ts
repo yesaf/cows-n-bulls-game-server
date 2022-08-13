@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import checkRegister from '../../middlewares/checkRegister';
 import response from '../../middlewares/response';
 import userController from '../../controllers/user.controller';
@@ -15,15 +15,18 @@ router.post(
     response(userController.register.bind(userController)),
 );
 router.post(
-    "/login",
+    '/login',
     validate(loginSchema),
     response(userController.login.bind(userController)),
 );
-router.post('/logout');
-router.get('/activate/:link');
-router.get('/refresh', (req: Request, res: Response) => {
-    res.send('Refresh');
-});
-router.get('/users');
+router.post('/logout',
+    response(userController.logout.bind(userController)),
+);
+router.get('/activate/:link',
+    userController.activate.bind(userController),
+);
+router.get('/refresh',
+    response(userController.refresh.bind(userController)),
+);
 
 export default router;

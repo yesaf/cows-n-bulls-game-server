@@ -1,11 +1,11 @@
 export interface IUserData {
-    _id: string;
+    _id?: string;
     username: string;
     email: string;
     password: string;
     friends: IUserId[];
     isActivated: boolean;
-    activationLink: string;
+    activationLink?: string;
 }
 
 export interface IRegister {

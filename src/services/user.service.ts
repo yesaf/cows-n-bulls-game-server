@@ -42,6 +42,5 @@ export default class UserService {
         }
         user.isActivated = true;
         await user.save();
-
     }
 }

@@ -6,6 +6,7 @@ import { v4 } from 'uuid';
 import MailService from '../services/mail.service';
 import UserDto from '../dtos/user.dto';
 import { IUserData } from 'user.types';
+import ApiError from '../exceptions/api.error';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -29,6 +30,7 @@ class UserController {
             });
 
         return {
+            message: "Authorized successfully",
             ...tokens,
             user: userDto,
         };
@@ -82,16 +84,35 @@ class UserController {
         }
     }
 
-    async logout(req: Request, res: Response) {
+    async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { refreshToken } = req.cookies;
+            const token = await this.tokenService.delete(refreshToken);
+            res.clearCookie('refreshToken');
+            return {
+                message: "Logout success",
+                token
+            };
+        } catch (e) {
+            next(e)
+        }
 
     }
 
-    async refresh(req: Request, res: Response) {
-
-    }
-
-    async getUsers(req: Request, res: Response) {
-
+    async refresh(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { refreshToken } = req.cookies;
+            const userData = await this.tokenService.refresh(refreshToken);
+            // @ts-ignore
+            const user = await this.userService.findOne({ _id: userData.id});
+            if (!user) {
+                throw ApiError.UnauthorizedError();
+            }
+            // @ts-ignore
+            return this.getAuth(user, res);
+        } catch (e) {
+            next(e);
+        }
     }
 
 }

@@ -1,7 +1,7 @@
-import Token from '../models/token'
-import { IUserIdAndToken } from 'token.type';
+import Token from '../models/token';
 import jwt from 'jsonwebtoken';
 import config from 'config';
+import ApiError from '../exceptions/api.error';
 
 export default class TokenService {
 
@@ -19,6 +19,23 @@ export default class TokenService {
         return { accessToken, refreshToken }
     }
 
+    static async validateAccessToken( token: string ) {
+        try {
+            return jwt.verify(token, config.get('jwtAccessSecret'))
+        } catch (e) {
+            return null
+        }
+
+    }
+
+    static async validateRefreshToken( token: string ) {
+        try {
+            return jwt.verify(token, config.get('jwtRefreshSecret'))
+        } catch (e) {
+            return null
+        }
+    }
+
     async saveToken(user: string, refreshToken: string) {
         if (await Token.findOne({ user })) {
             return await this.update(user, refreshToken);
@@ -31,7 +48,21 @@ export default class TokenService {
         return Token.findOne({ user });
     }
 
-    async delete( userAndToken: IUserIdAndToken ) {
-        return Token.deleteOne(userAndToken);
+    async delete( refreshToken: string ) {
+        return Token.deleteOne({ refreshToken });
+    }
+
+    async refresh( refreshToken: string ) {
+        if (!refreshToken) {
+            throw ApiError.UnauthorizedError();
+        }
+        const userAndToken = Token.findOne({ refreshToken });
+        const payload = TokenService.validateRefreshToken(refreshToken);
+
+        if (!userAndToken || !payload) {
+            throw ApiError.UnauthorizedError();
+        }
+        return payload;
+
     }
 }
