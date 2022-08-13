@@ -1,0 +1,7 @@
+{
+  "mongoURI": "mongodb+srv://admin:4IUt1WiUHtaBt5uf@cluster0.hslh6jn.mongodb.net/?retryWrites=true&w=majority",
+  "jwtAccessSecret": "0a52d72fc2bdd982ad6f1c932565a92afce7cccbd533b8eb2e125f1e56f9ef78",
+  "jwtRefreshSecret": "41dc49682c23aa33f04ad1a0eac618d9e0be03a85c4d63d1c5087d1b74169f37",
+  "jwtAccessExpiresIn": "15m",
+  "jwtRefreshExpiresIn": "30d"
+}
