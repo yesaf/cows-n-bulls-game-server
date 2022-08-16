@@ -61,7 +61,7 @@ export default class TokenService {
 
         if (!userAndToken || !payload) {
             throw ApiError.UnauthorizedError();
-        }
+        } 
         return payload;
 
     }

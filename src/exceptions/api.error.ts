@@ -13,7 +13,7 @@ export default class ApiError extends Error {
     }
 
     static BadRequestError(message="Bad request", errors = []) {
-        return new ApiError(400, "Bad request", errors)
+        return new ApiError(400, message, errors)
     }
 
     static UserDataTakenError(message: string) {

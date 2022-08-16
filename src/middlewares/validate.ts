@@ -3,7 +3,7 @@ import { ValidationOptions, ValidationResult } from 'joi';
 import ApiError from '../exceptions/api.error';
 
 type Schema = {
-    validate(value: any, options?: ValidationOptions | undefined): ValidationResult
+    validate: (value: any, options?: ValidationOptions | undefined) => ValidationResult
 };
 
 export default function(schema: Schema) {
