@@ -7,6 +7,7 @@ import MailService from '../services/mail.service';
 import UserDto from '../dtos/user.dto';
 import { IUserData } from 'user.types';
 import ApiError from '../exceptions/api.error';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -113,6 +114,11 @@ class UserController {
         } catch (e) {
             next(e);
         }
+    }
+
+    async checkAuth(_req: Request, _res: Response, _next: NextFunction) {
+        // All check is done in auth middleware
+        return { message: "Authenticated successfully"};
     }
 
 }

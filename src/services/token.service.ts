@@ -2,10 +2,11 @@ import Token from '../models/token';
 import jwt from 'jsonwebtoken';
 import config from 'config';
 import ApiError from '../exceptions/api.error';
+import UserDto from '../dtos/user.dto';
 
 export default class TokenService {
 
-    static async generateTokens(payload: any) {
+    static generateTokens(payload: UserDto) {
         const accessToken = jwt.sign(
             payload,
             config.get("jwtAccessSecret"),
@@ -19,7 +20,7 @@ export default class TokenService {
         return { accessToken, refreshToken }
     }
 
-    static async validateAccessToken( token: string ) {
+    static validateAccessToken( token: string ) {
         try {
             return jwt.verify(token, config.get('jwtAccessSecret'))
         } catch (e) {
@@ -28,7 +29,7 @@ export default class TokenService {
 
     }
 
-    static async validateRefreshToken( token: string ) {
+    static validateRefreshToken( token: string ) {
         try {
             return jwt.verify(token, config.get('jwtRefreshSecret'))
         } catch (e) {
@@ -61,7 +62,7 @@ export default class TokenService {
 
         if (!userAndToken || !payload) {
             throw ApiError.UnauthorizedError();
-        } 
+        }
         return payload;
 
     }

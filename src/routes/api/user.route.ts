@@ -4,6 +4,7 @@ import response from '../../middlewares/response';
 import userController from '../../controllers/user.controller';
 import validate from '../../middlewares/validate';
 import { loginSchema, registerSchema } from '../../utils/validationSchemas';
+import authMiddleware from '../../middlewares/auth.middleware';
 
 const router: Router = Router();
 
@@ -27,6 +28,10 @@ router.get('/activate/:link',
 );
 router.get('/refresh',
     response(userController.refresh.bind(userController)),
+);
+router.get('/check',
+    authMiddleware,
+    response(userController.checkAuth.bind(userController)),
 );
 
 export default router;
