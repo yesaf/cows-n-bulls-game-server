@@ -18,32 +18,12 @@ class UserController {
         private tokenService: TokenService) {
     }
 
-    private async getAuth(user: IUserData, res: Response) {
-        const userDto = new UserDto(user);
-        const tokens = await TokenService.generateTokens({ ...userDto });
-        await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
-        res.cookie(
-            'refreshToken',
-            tokens.refreshToken,
-            {
-                httpOnly: true,
-                maxAge: 30 * 24 * 60 * 60 * 1000, // calculated 30 days
-            });
-
-        return {
-            message: "Authorized successfully",
-            ...tokens,
-            user: userDto,
-        };
-    }
-
     async register(req: Request, res: Response, next: NextFunction) {
         try {
             const { username, email, password } = req.body;
 
             const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
             const activationLink = v4();
-            console.log(activationLink);
 
             const user = await this.userService.register({
                 username,
@@ -116,9 +96,37 @@ class UserController {
         }
     }
 
-    async checkAuth(_req: Request, _res: Response, _next: NextFunction) {
+    async checkAuth(req: Request, _res: Response, _next: NextFunction) {
         // All check is done in auth middleware
-        return { message: "Authenticated successfully"};
+        return { message: "Authenticated successfully", user: req.user};
+    }
+
+    async getUserById(req: Request<any, any , any, {_id: string}>, _res: Response, next: NextFunction) {
+        try {
+            const { _id } = req.query;
+            return this.userService.findOne({ _id });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    private async getAuth(user: IUserData, res: Response) {
+        const userDto = new UserDto(user);
+        const tokens = TokenService.generateTokens({ ...userDto });
+        await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
+        res.cookie(
+            'refreshToken',
+            tokens.refreshToken,
+            {
+                httpOnly: true,
+                maxAge: 30 * 24 * 60 * 60 * 1000, // calculated 30 days
+            });
+
+        return {
+            message: "Authorized successfully",
+            ...tokens,
+            user: userDto,
+        };
     }
 
 }

@@ -8,7 +8,6 @@ import authMiddleware from '../../middlewares/auth.middleware';
 
 const router: Router = Router();
 
-
 router.post(
     '/register',
     validate(registerSchema),
