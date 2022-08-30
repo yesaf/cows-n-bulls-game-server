@@ -101,10 +101,21 @@ class UserController {
         return { message: "Authenticated successfully", user: req.user};
     }
 
-    async getUserById(req: Request<any, any , any, {_id: string}>, _res: Response, next: NextFunction) {
+    async getUserById(req: Request, _res: Response, next: NextFunction) {
         try {
             const { _id } = req.query;
-            return this.userService.findOne({ _id });
+            if (!(typeof _id === 'string')) {
+                throw ApiError.BadRequestError('No user id was passed');
+            }
+            const user = await this.userService.findOne({ _id });
+            if (user) {
+                return {
+                    _id: user._id,
+                    username: user.username,
+                    friend: user.friends,
+                };
+            }
+            return user;
         } catch (e) {
             next(e);
         }

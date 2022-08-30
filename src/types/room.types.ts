@@ -7,6 +7,12 @@ export interface IRoom {
     users: string[];
 }
 
+export interface IRoomCreate {
+    name: string;
+    password?: string;
+    open?: boolean;
+}
+
 export interface IRoomUpdate {
     open?: boolean;
     users?: string[];

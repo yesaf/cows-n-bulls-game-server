@@ -1,4 +1,4 @@
-import { IRegister, IUserId } from 'user.types';
+import { IRegister, IUserData, IUserId } from 'user.types';
 import User from '../models/User';
 import ApiError from '../exceptions/api.error';
 import bcrypt from 'bcryptjs';
@@ -27,11 +27,11 @@ export default class UserService {
         return user;
     }
 
-    async findOne(filter: IFindUser) {
+    async findOne(filter: IFindUser): Promise<IUserData | null> {
         return User.findOne(filter);
     }
 
-    async deleteOne(userId: IUserId) {
+    async deleteOne(userId: IUserId): Promise<IUserData | null> {
         return User.findOneAndDelete(userId);
     }
 

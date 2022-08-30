@@ -1,6 +1,6 @@
 import RoomService from '../services/room.service';
 import { NextFunction, Request, Response } from 'express';
-import { IRoom, IRoomFilter } from 'room.types';
+import { IRoom, IRoomCreate, IRoomFilter } from 'room.types';
 import bcrypt from 'bcryptjs';
 import ApiError from '../exceptions/api.error';
 
@@ -9,7 +9,7 @@ class RoomController {
         private roomService: RoomService
     ) {}
 
-    async create(req: Request<any, any, IRoom>, _res: Response, next: NextFunction) {
+    async create(req: Request<any, any, IRoomCreate>, _res: Response, next: NextFunction) {
         try {
             const { name, password, open } = req.body;
             let roomData: IRoom = {

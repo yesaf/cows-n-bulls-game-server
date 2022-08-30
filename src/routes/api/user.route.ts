@@ -33,4 +33,8 @@ router.get('/check',
     response(userController.checkAuth.bind(userController)),
 );
 
+router.get('/',
+    response(userController.getUserById.bind(userController))
+);
+
 export default router;
