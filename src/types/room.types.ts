@@ -23,8 +23,13 @@ interface INameRegex {
     $options: "i";
 }
 
+interface IPasswordExistence {
+    $exists: string | boolean;
+}
+
 export interface IRoomFilter {
     _id?: string;
     name?: string | INameRegex;
+    password?: string | boolean | IPasswordExistence;
     open?: boolean;
 }

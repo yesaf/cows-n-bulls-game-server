@@ -52,9 +52,12 @@ class RoomController {
 
     async find(req: Request<any, any, any, IRoomFilter>, _res: Response, next: NextFunction) {
         try {
-            const filter = req.query;
+            const filter: IRoomFilter = req.query;
             if (typeof filter.name === 'string') {
                 filter.name = { "$regex": filter.name, "$options": "i" };
+            }
+            if (typeof filter.password === 'string' || typeof filter.password === 'boolean') {
+                filter.password = { $exists: filter.password };
             }
             return await this.roomService.find(req.query);
         } catch (e) {

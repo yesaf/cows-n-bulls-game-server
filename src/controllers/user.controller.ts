@@ -69,7 +69,7 @@ class UserController {
         try {
             const { refreshToken } = req.cookies;
             const token = await this.tokenService.delete(refreshToken);
-            res.clearCookie('refreshToken', {path: '/'});
+            res.clearCookie('refreshToken');
             return {
                 message: "Logout success",
                 token
@@ -130,7 +130,6 @@ class UserController {
             tokens.refreshToken,
             {
                 httpOnly: true,
-                path: '/',
                 maxAge: 30 * 24 * 60 * 60 * 1000, // calculated 30 days
             });
 
