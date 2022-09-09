@@ -14,6 +14,8 @@ import errorHandler from "./middlewares/error.handler"
 // import axios from "axios";
 
 import AppRouter from "./routes";
+import * as http from 'http';
+import upgradeSockets from './ws/upgradeSockets';
 
 const app = express();
 const router = new AppRouter(app);
@@ -61,7 +63,9 @@ app.use(errorHandler)
 // }));
 
 const port = app.get("port");
-const server = app.listen(port, () =>
+const server = http.createServer(app);
+upgradeSockets(server);
+server.listen(port, () =>
     // tslint:disable-next-line:no-console
     console.log(`Server started on port ${port}`)
 );
