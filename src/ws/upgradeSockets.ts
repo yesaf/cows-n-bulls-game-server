@@ -1,41 +1,37 @@
 import { Server as HttpServer } from 'http';
 import { Server as IoServer, Socket } from 'socket.io';
+import RoomService from '../services/room.service';
+
+interface ISessionData {
+    userId?: string;
+    roomId?: string;
+}
 
 export default (server: HttpServer) => {
+    const roomService = new RoomService();
+    const sessionData: ISessionData = {
+
+    };
     const io = new IoServer(server, {
         cors: {
-            origin: ['http://localhost:3000', 'http://192.168.0.157:3000', 'https://web.postman.co/']
+            origin: ['http://localhost:3000', 'http://192.168.0.157:3000']
         }
     });
 
-    // io.use(async (socket: WebSocket, next: NextFunction) => {
-    //     const sessionID = socket.handshake.auth.sessionID;
-    //     const roomID = socket.handshake.auth.roomID;
-    //     if (sessionID) {
-    //         const session = sessionStore.findSession(sessionID);
-    //
-    //         if (session) {
-    //             socket.sessionID = sessionID;
-    //             socket.roomID = session.roomID;
-    //             socket.userID = session.userID;
-    //             socket.username = session.username;
-    //             return next();
-    //         }
-    //     }
-    //     const username = socket.handshake.auth.username;
-    //     if (!username) {
-    //         return next(new Error('invalid username'));
-    //     }
-    //
-    //     socket.sessionID = uuidv4();
-    //     socket.roomID = roomID;
-    //     socket.userID = uuidv4();
-    //     socket.username = username;
-    //     next();
-    // });
-
-    io.on('connection', (socket: Socket) => {
+    io.on('connection',  (socket: Socket) => {
         console.log('connection', socket.id);
+        socket.on('joinRoom', async ({roomId, userId}) => {
+            if ((await roomService.findById(roomId))?.users.includes(userId)) {
+                sessionData.userId = userId;
+                sessionData.roomId = roomId;
+                console.log(`User with id ${userId} connects to the room ${roomId}`);
+                console.log('Session data:');
+                console.log(sessionData);
+                socket.emit('connected', sessionData)
+            } else {
+                socket.emit('notPlayer');
+            }
+        })
         // socket.on('joinRoom', ({ roomID }) => {
         //     sessionStore.saveSession(socket.sessionID, {
         //         sessionID: socket.sessionID,

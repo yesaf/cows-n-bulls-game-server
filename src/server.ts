@@ -32,10 +32,10 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+app.use(errorHandler);
 
 router.init();
 
-app.use(errorHandler)
 
 
 // TODO: Move that to model GraphQL

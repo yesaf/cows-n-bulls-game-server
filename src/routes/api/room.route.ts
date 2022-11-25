@@ -17,7 +17,7 @@ router.get('/',
     response(roomController.find.bind(roomController)),
 );
 
-router.delete('',
+router.delete('/',
     authMiddleware,
     response(roomController.delete.bind(roomController)),
 );

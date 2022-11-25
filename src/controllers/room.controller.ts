@@ -34,6 +34,8 @@ class RoomController {
         try {
             const { _id, password } = req.body;
             const room = await this.roomService.findById(_id);
+            console.log(req.body);
+            console.log(room);
             return await this.connectRoom(req.user.id, _id, password, room)
         } catch (e) {
             next(e)
